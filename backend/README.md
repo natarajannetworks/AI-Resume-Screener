@@ -1,2 +1,9 @@
-# AI-Resume-Screener
-AI Resume Screener and Candidate Ranking Tool using React, FastAPI and Claude API
+AI Resume Screener Backend
+
+Backend service for AI Resume Screener & Candidate Ranking Tool.
+
+Tech Stack:
+- FastAPI
+- Python
+- SQLite (Planned)
+- Claude API (Planned)
