@@ -1,0 +1,28 @@
+# .gitignore
+# IMPORTANT: This protects your API key from being pushed to GitHub
+
+# Environment variables - NEVER push this!
+.env
+*.env
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VS Code settings
+.vscode/
+
+# Test output files
+*.log
+test_output/
