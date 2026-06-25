@@ -1,169 +1,74 @@
-# AI Resume Screener & Candidate Ranking Tool
-
-Full-stack rebuild: FastAPI backend (SQLite + Gemini AI scoring) + React frontend
-(React Router, real data wiring, Dashboard/Upload/Candidates/History/Reports/Analytics).
-
----
-
-## What Changed From the Original Project
-
-### Backend fixes
-- **Fixed field-name mismatch**: `score_resume()` returns `reasoning`, but the old
-  `/analyze-all` route was reading a non-existent `summary` key — always empty.
-- **Fixed `/compare`**: was sending raw resume text instead of the structured
-  candidate dicts `compare_candidates()` actually expects.
-- **Removed duplicate/dead files**: `app/scorer.py`, `app/prompt_templates.py`,
-  `app/services/pdf_service.py`, `app/services/ranking_service.py` were unused
-  copies that could silently drift out of sync with the real logic in
-  `app/ai_logic/`.
-- **Extended database schema**: added a `JobAnalysis` table so multiple resumes
-  uploaded together are grouped into one batch — this is what makes History,
-  Reports, and Analytics possible.
-- **Added missing dependencies** to `requirements.txt`: `google-genai`,
-  `python-dotenv`, `sqlalchemy` were imported by the code but never listed —
-  a fresh `pip install -r requirements.txt` would have crashed.
-- **New routes**: `/upload-batch`, `/history`, `/history/{id}`, `/reports`,
-  `/reports/{id}/excel`, `/reports/{id}/pdf`, `/analytics`.
-
-### Frontend fixes
-- **Added React Router** — sidebar links (Candidates, History, Reports, Analytics,
-  Settings, About) previously went nowhere; now each is a real page.
-- **Removed the static mockup `InputPage.jsx`** — it had a working "Analyze" button
-  but everything else (stat cards, candidate preview table) was hardcoded fake data.
-- **Fixed the data contract**: old `ResultsPage.jsx` expected fields like
-  `recommendation`, `currentRole`, `totalExperience` that the backend never sent.
-  All new pages use the exact field names the backend now returns.
-- **New pages**: Dashboard, Upload, Analyzing, Candidates (with compare + detail
-  drawer), History, Reports, Analytics (with charts), Settings, About.
-- **Centralized API client** (`src/api/client.js`) — one file, one source of truth
-  for every backend call.
-
----
-
-## Project Structure
-
-```
+AI Resume Screener & Candidate Ranking Tool 🚀
+An advanced, full-stack recruitment platform that automates resume parsing, scoring, and ranking using Mistral AI and FastAPI.
+🌐 Live Links
+Live Application: https://ai-resume-screener-fawn-two.vercel.app/
+Backend API (Swagger): https://ai-resume-screener-1bmz.onrender.com/docs
+🛠️ Tech Stack
+Frontend: React.js, Tailwind CSS, Recharts (Analytics), Vite
+Backend: FastAPI (Python), SQLAlchemy (SQLite), PyMuPDF
+AI Engine: Mistral AI (mistral-small-latest)
+Deployment: Vercel (Frontend) & Render (Backend)
+✨ Key Features & "The Rebuild"
+This project is a high-performance integration of four specialized modules into one production-ready system.
+🧠 Intelligent Scoring: Powered by Mistral-small-latest for high-speed, accurate candidate evaluation.
+📂 PDF Extraction: High-fidelity text extraction from complex PDF layouts using PyMuPDF.
+📊 Analytics Dashboard: Real-time visualization of candidate match distributions and skill gaps.
+🗄️ Relational Persistence: Full history tracking using SQLAlchemy and SQLite for batch analysis.
+📑 Professional Export: Instant generation of ranked candidate reports in Excel and PDF formats.
+👥 Team Contributions
+Natarajan – AI Integration & Project Lead
+Mistral AI Core: Implemented the core screening engine using the Mistral-small model, featuring robust 429 rate-limit handling and safe JSON parsing.
+System Integration: Spearheaded the "clubbing" of all modules (Parsing, Backend, AI, Frontend) into a unified, high-performance repository.
+DevOps & Cloud: Managed the full deployment lifecycle on Render and Vercel, optimized Git workflows, and secured sensitive API credentials.
+Harshini – Frontend & UI/UX Lead
+Core UI Development: Architected the complete interface using React.js and Tailwind CSS, creating a responsive and component-based design.
+Recruiter Modules: Developed the Job Description input system and the multi-resume drag-and-drop upload interface.
+Workflow Visualization: Engineered the multi-stage navigation flow (Input → Analysis → Results) to enhance user awareness and usability.
+Madduri Sai Mythili – Parsing & Validation Specialist
+Extraction Pipeline: Developed the PDF parsing module using PyMuPDF, ensuring clean text extraction from diverse resume formats.
+Validation Suite: Designed the candidate ranking pipeline validation and created automated test scripts (main_ai_test.py, run_demo.py).
+Data Quality: Verified extraction accuracy for critical sections like Education, Skills, and Experience to ensure high-quality AI input.
+Konda – Backend & Database Architect
+REST API Development: Built the backend infrastructure using FastAPI, managing all REST endpoints for candidates, rankings, and JD handling.
+Database Engineering: Designed the SQLite/SQLAlchemy schema, implementing the JobAnalysis and Candidate models for long-term data persistence.
+API Orchestration: Configured Swagger UI and managed the data communication between the AI scoring engine and the frontend dashboard.
+📂 Project Structure
+code
+Text
 backend/
   app/
-    main.py              # FastAPI app, registers all routers
-    database.py           # SQLAlchemy models: JobAnalysis, Candidate
-    .env                  # Your real Gemini API key (not committed)
-    .env.example           # Template
+    main.py              # FastAPI app & CORS configuration
+    database.py          # SQLAlchemy models (SQLite)
     ai_logic/
-      scorer.py            # Your verified Gemini scoring engine (unchanged logic)
-      prompt_templates.py   # Your verified prompts (unchanged)
-    routes/
-      upload.py             # POST /upload, POST /upload-batch
-      ranking.py             # POST /analyze-all, GET /rankings, POST /compare
-      candidate.py            # GET /candidates, GET /candidates/{id}
-      history.py               # GET/DELETE /history, GET /history/{id}
-      reports.py                # GET /reports, GET /reports/{id}/excel|pdf
-      analytics.py               # GET /analytics
-      job_description.py          # (existing, unchanged)
-      health.py                    # GET /health
+      scorer.py          # Mistral-small scoring & Rate-limit handling
+      prompt_templates.py # Specialized AI HR prompts
+    routes/              # Ranking, History, Reports, and Analytics routes
     services/
-      pdf_parser.py                 # PyMuPDF text extraction (unchanged)
-    exports/
-      excel_report.py                # Adapted from parsing+export module
-      pdf_report.py                   # Adapted from parsing+export module
-  requirements.txt
+      pdf_parser.py       # PyMuPDF extraction engine
+    exports/             # Excel & PDF report generators
 
 frontend/
   src/
-    App.js                  # Routes
-    context/AppContext.jsx   # Shared state: active analysis, JD, candidates
-    api/client.js             # All backend calls in one place
-    components/
-      AppShell.jsx             # Sidebar + topbar layout, used by every page
-      CandidateDrawer.jsx       # Right-side detail panel
-      ScoreRing.jsx               # Circular score indicator (unchanged)
-    pages/
-      DashboardPage.jsx
-      UploadPage.jsx
-      AnalyzingPage.jsx
-      CandidatesPage.jsx
-      HistoryPage.jsx
-      ReportsPage.jsx
-      AnalyticsPage.jsx
-      SettingsPage.jsx
-      AboutPage.jsx
-```
-
----
-
-## How to Run
-
-### 1. Backend
-
-```bash
+    App.js               # React Router & Page Routing
+    context/             # Centralized AppState (AppContext)
+    api/client.js        # Axios production client
+    pages/               # Dashboard, Upload, Candidates, History, Analytics
+🚀 Local Installation
+1. Backend Setup
+code
+Bash
 cd backend
 python -m venv venv
-venv\Scripts\activate          # Windows
-# source venv/bin/activate     # Mac/Linux
-
+source venv/bin/activate # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-```
-
-Your `app/.env` already has your real `GEMINI_API_KEY` — just confirm it's there.
-If missing, copy `app/.env.example` to `app/.env` and add your key.
-
-```bash
-uvicorn app.main:app --reload --port 8000
-```
-
-Backend runs at `http://localhost:8000`. Visit `http://localhost:8000/docs`
-for interactive API testing (Swagger UI).
-
-### 2. Frontend
-
-```bash
+uvicorn app.main:app --reload
+2. Frontend Setup
+code
+Bash
 cd frontend
 npm install
 npm start
-```
-
-Opens at `http://localhost:3000`.
-
----
-
-## End-to-End Flow (Verified Working)
-
-1. Open `http://localhost:3000` → Dashboard
-2. Click **Upload Resumes** in sidebar
-3. Enter a job title + job description (20+ characters)
-4. Drag & drop PDF resumes, click **Analyze Candidates**
-5. Watch the **Analyzing** page run real Gemini scoring (`/analyze-all`)
-6. Redirects to **Candidates** — ranked table, click any row for full AI detail drawer
-7. Select 2 candidates → **Compare Selected** for a head-to-head AI verdict
-8. **History** — every past analysis is saved; reopen any of them
-9. **Reports** — download Excel or PDF for any past analysis
-10. **Analytics** — match distribution pie chart, score histogram, top skills bar chart
-
----
-
-## Verified During Build
-
-- ✅ Backend imports cleanly, all 16 routes registered correctly
-- ✅ Frontend builds cleanly (`npm run build` succeeds, no errors)
-- ✅ `/upload-batch` → real PDF text extraction → DB persisted correctly
-- ✅ `/analyze-all` → calls real `score_resume()`, correct error handling on API issues
-- ✅ `/candidates`, `/candidates/{id}`, `/history`, `/history/{id}`, `/analytics`,
-  `/reports` all tested with seeded data — correct field names, correct values
-- ✅ Excel report downloads as valid `.xlsx` with correct ranked data
-- ✅ PDF report downloads as valid `.pdf` with correct ranked data
-- ⚠️ Live Gemini calls could not be tested in the build sandbox (no internet
-  access to `generativelanguage.googleapis.com` from this environment) — but
-  the exact same `scorer.py` logic was already verified working live by you
-  in your own terminal earlier with real resumes. Test `/analyze-all` on your
-  machine to confirm end-to-end with live AI.
-
----
-
-## Known Limitations / Next Steps
-
-- DOCX/TXT upload is accepted by the UI but `pdf_parser.py` only extracts from
-  PDF — add a docx/txt branch in `services/pdf_parser.py` if you need it.
-- Settings page is a placeholder (backend URL is hardcoded in `api/client.js`
-  for now — wire it up if you need runtime configurability).
-- No authentication — anyone with the URL can access all data (fine for a
-  college project demo, not for production).
+🔒 Security & Optimization
+Credential Security: Secured via .env files and .gitignore to prevent API key leakage.
+CORS Management: Backend restricted to verified frontend origins for secure cross-origin resource sharing.
+Performance: Optimized Python I/O operations for simultaneous processing of 20+ candidate resumes.

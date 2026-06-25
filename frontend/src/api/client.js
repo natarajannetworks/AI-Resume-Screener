@@ -1,7 +1,9 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:8000",
+  // Replace with your actual Render backend link
+  // Change this line:
+  baseURL: "https://ai-resume-screener-1bmz.onrender.com",
   timeout: 120000, // AI scoring can take a while across multiple resumes
 });
 

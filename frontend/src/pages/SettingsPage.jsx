@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import AppShell from "../components/AppShell";
 
 export default function SettingsPage() {
-  const [backendUrl, setBackendUrl] = useState(localStorage.getItem("resumeai_backend_url") || "http://localhost:8000");
+  const [backendUrl, setBackendUrl] = useState(localStorage.getItem("resumeai_backend_url") || "https://ai-resume-screener-1bmz.onrender.com");
   const [saved, setSaved] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
   const [aiMode, setAiMode] = useState("deep");
