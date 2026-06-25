@@ -1,0 +1,10 @@
+app/.env
+__pycache__/
+*.pyc
+resume.db
+app/uploads/*
+!app/uploads/.gitkeep
+app/generated_reports/*
+!app/generated_reports/.gitkeep
+.venv/
+venv/
