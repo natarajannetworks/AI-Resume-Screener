@@ -20,7 +20,7 @@ print("═"*50 + "\n")
 MISTRAL_URL = "https://api.mistral.ai/v1/chat/completions"
 
 # CHANGED: Using mistral-large-2411 for higher Rate Limits (1.0 RPS vs 0.03 RPS)
-MODEL = "mistral-large-2411" 
+MODEL = "mistral-small-latest" 
 
 # 2. IMPORT PROMPT TEMPLATES
 try:
