@@ -99,7 +99,7 @@ An advanced **AI-powered recruitment platform** that automates resume parsing, i
 
 ---
 
-## ⚙️ Konda – Backend & Database
+## ⚙️ Konda Yashas Sree – Backend & Database
 
 * Developed REST APIs using FastAPI
 * Designed the SQLite database schema
@@ -214,6 +214,6 @@ This project was developed as an academic project for educational purposes.
 * Natarajan S
 * Harshini
 * Madduri Sai Mythili
-* Konda
+* Konda Yashas Sree
 
 **Year:** 2026
